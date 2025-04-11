@@ -21,3 +21,19 @@ class Answer(models.Model):
 
     def total_likes(self):
         return self.likes.count()
+    
+
+
+class QuestionPass(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ('user', 'question')
+
+class QuestionReport(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ('user', 'question')

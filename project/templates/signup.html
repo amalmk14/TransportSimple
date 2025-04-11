@@ -1,9 +1,85 @@
+
+
 {% extends 'base.html' %}
 {% block content %}
-<h2>Signup</h2>
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="btn btn-success">Signup</button>
-</form>
+<div class="container mt-5">
+    <h2>Signup</h2>
+    <form method="post" id="signupForm">
+        {% csrf_token %}
+        
+        <div class="mb-3">
+            <label for="id_username" class="form-label">Username</label>
+            <input type="text" name="username" class="form-control" id="id_username" required>
+            <div class="invalid-feedback" id="username-feedback">Username already exists.</div>
+        </div>
+
+        <div class="mb-3">
+            <label for="id_password1" class="form-label">Password</label>
+            <input type="password" name="password1" class="form-control" id="id_password1" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="id_password2" class="form-label">Confirm Password</label>
+            <input type="password" name="password2" class="form-control" id="id_password2" required>
+            <div class="invalid-feedback" id="password-feedback">Passwords do not match.</div>
+        </div>
+
+        <button type="submit" class="btn btn-success" id="signup-btn" disabled>Signup</button>
+    </form>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const usernameInput = document.getElementById('id_username');
+    const password1 = document.getElementById('id_password1');
+    const password2 = document.getElementById('id_password2');
+    const signupBtn = document.getElementById('signup-btn');
+
+    let isUsernameValid = false;
+    let isPasswordMatch = false;
+
+    function toggleButton() {
+        signupBtn.disabled = !(isUsernameValid && isPasswordMatch);
+    }
+
+    usernameInput.addEventListener('input', () => {
+        const username = usernameInput.value.trim();
+        if (username.length > 0) {
+            fetch(`/ajax/check_username/?username=${username}`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.exists) {
+                        usernameInput.classList.add('is-invalid');
+                        isUsernameValid = false;
+                    } else {
+                        usernameInput.classList.remove('is-invalid');
+                        isUsernameValid = true;
+                    }
+                    toggleButton();
+                });
+        } else {
+            usernameInput.classList.remove('is-invalid');
+            isUsernameValid = false;
+            toggleButton();
+        }
+    });
+
+    password2.addEventListener('input', () => {
+        if (password1.value && password2.value && password1.value === password2.value) {
+            password2.classList.remove('is-invalid');
+            isPasswordMatch = true;
+        } else {
+            password2.classList.add('is-invalid');
+            isPasswordMatch = false;
+        }
+        toggleButton();
+    });
+
+    password1.addEventListener('input', () => {
+        if (password2.value.length > 0) {
+            password2.dispatchEvent(new Event('input'));
+        }
+    });
+});
+</script>
 {% endblock %}

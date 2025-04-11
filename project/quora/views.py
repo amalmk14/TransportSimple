@@ -3,7 +3,15 @@ from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from .forms import SignupForm, QuestionForm, AnswerForm
 from .models import Question, Answer
+from django.http import JsonResponse
+from django.contrib.auth.models import User
 
+
+
+def check_username(request):
+    username = request.GET.get('username', None)
+    exists = User.objects.filter(username__iexact=username).exists()
+    return JsonResponse({'exists': exists})
 
 def signup_view(request):
     if request.method == 'POST':
@@ -154,11 +162,6 @@ def delete_answer(request, pk):
         answer.delete()
     return redirect('view_question', pk=question_pk)
 
-# @login_required
-# def like_answer(request, pk):
-#     answer = get_object_or_404(Answer, pk=pk)
-#     answer.likes.add(request.user)
-#     return redirect('view_question', pk=answer.question.pk)
 
 @login_required
 def toggle_like_answer(request, pk):
