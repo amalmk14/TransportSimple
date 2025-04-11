@@ -1,16 +1,20 @@
-
-
 {% extends 'base.html' %}
 {% block content %}
 <div class="container mt-5">
     <h2>Signup</h2>
     <form method="post" id="signupForm">
         {% csrf_token %}
-        
+
         <div class="mb-3">
             <label for="id_username" class="form-label">Username</label>
             <input type="text" name="username" class="form-control" id="id_username" required>
             <div class="invalid-feedback" id="username-feedback">Username already exists.</div>
+        </div>
+
+        <div class="mb-3">
+            <label for="id_email" class="form-label">Email</label>
+            <input type="email" name="email" class="form-control" id="id_email" required>
+            <div class="invalid-feedback" id="email-feedback">Email already exists.</div>
         </div>
 
         <div class="mb-3">
@@ -31,21 +35,24 @@
 <script>
 document.addEventListener('DOMContentLoaded', () => {
     const usernameInput = document.getElementById('id_username');
+    const emailInput = document.getElementById('id_email');
     const password1 = document.getElementById('id_password1');
     const password2 = document.getElementById('id_password2');
     const signupBtn = document.getElementById('signup-btn');
 
     let isUsernameValid = false;
+    let isEmailValid = false;
     let isPasswordMatch = false;
 
     function toggleButton() {
-        signupBtn.disabled = !(isUsernameValid && isPasswordMatch);
+        signupBtn.disabled = !(isUsernameValid && isEmailValid && isPasswordMatch);
     }
 
+    // Username check
     usernameInput.addEventListener('input', () => {
         const username = usernameInput.value.trim();
         if (username.length > 0) {
-            fetch(`/ajax/check_username/?username=${username}`)
+            fetch(`/check_username/?username=${username}`)
                 .then(res => res.json())
                 .then(data => {
                     if (data.exists) {
@@ -64,6 +71,30 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // Email check
+    emailInput.addEventListener('input', () => {
+        const email = emailInput.value.trim();
+        if (email.length > 0) {
+            fetch(`/check_email/?email=${email}`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.exists) {
+                        emailInput.classList.add('is-invalid');
+                        isEmailValid = false;
+                    } else {
+                        emailInput.classList.remove('is-invalid');
+                        isEmailValid = true;
+                    }
+                    toggleButton();
+                });
+        } else {
+            emailInput.classList.remove('is-invalid');
+            isEmailValid = false;
+            toggleButton();
+        }
+    });
+
+    // Password match check
     password2.addEventListener('input', () => {
         if (password1.value && password2.value && password1.value === password2.value) {
             password2.classList.remove('is-invalid');

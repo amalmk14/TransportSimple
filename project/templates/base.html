@@ -9,7 +9,7 @@
 <body>
 <nav class="navbar navbar-expand-lg navbar-light bg-dark mb-4">
     <div class="container-fluid">
-        <a class="navbar-brand text-danger" style="font-size: 30px;" href="{% url 'home' %}">QuoraClone</a>
+        <a class="navbar-brand text-danger" style="font-size: 30px;" href="{% url 'quora:home' %}">QuoraClone</a>
         <div class="collapse navbar-collapse">
             <ul class="navbar-nav ms-auto">
                 {% if user.is_authenticated %}
@@ -19,14 +19,14 @@
                     </button>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-danger" href="{% url 'logout' %}">Logout</a>
+                    <a class="nav-link text-danger" href="{% url 'quora:logout' %}">Logout</a>
                 </li>
                 {% else %}
                 <li class="nav-item">
-                    <a class="nav-link text-light" href="{% url 'signup' %}">Signup</a>
+                    <a class="nav-link text-light" href="{% url 'quora:signup' %}">Signup</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-light" href="{% url 'login' %}">Login</a>
+                    <a class="nav-link text-light" href="{% url 'quora:login' %}">Login</a>
                 </li>
                 {% endif %}
             </ul>
@@ -48,7 +48,7 @@
           <h5 class="modal-title" id="postQuestionModalLabel">Ask a Question</h5>
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-        <form method="post" action="{% url 'post_question' %}">
+        <form method="post" action="{% url 'quora:post_question' %}">
           {% csrf_token %}
           <div class="modal-body">
             {{ question_form.as_p }}

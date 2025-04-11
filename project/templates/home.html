@@ -21,12 +21,12 @@
                 <div class="mb-3">
                     <span class="fs-4 fw-bold text-white text-decoration-underline">Questions</span>
                 </div>
-                <a href="{% url 'home' %}?view=others"
+                <a href="{% url 'quora:home' %}?view=others"
                    class="btn btn-sm   text-white {% if view_type == 'others' %}active-btn{% endif %}">
                     Questions for You
                 </a>
                 <br>
-                <a href="{% url 'home' %}?view=yours"
+                <a href="{% url 'quora:home' %}?view=yours"
                    class="btn btn-sm  mb-2 text-white {% if view_type == 'yours' %}active-btn{% endif %}">
                     Your Questions
                 </a>
@@ -36,17 +36,20 @@
         <div class="col-md-7 bg-dark">
             <h2 class="text-light">Latest Questions</h2>
             {% for question in questions %}
-                <div class="card my-3 bg-dark text-light">
+                <div class="card my-3 bg-dark text-light position-relative">
+                    {% if question.user != user %}
+                        <a href="{% url 'quora:pass_question' question.pk %}" class="position-absolute top-0 end-0 m-2 text-danger" title="Pass this question">
+                            <i class="bi bi-x-circle-fill fs-5"></i>
+                        </a>
+                    {% endif %}
                     <div class="card-body">
                         <h5 class="card-title">{{ question.title }}</h5>
                         <p class="card-text">{{ question.body|truncatechars:150 }}</p>
-                        <!-- {% if question.image %}
-                            <img src="{{ question.image.url }}" alt="Question Image" style="max-width: 300px; height: auto; margin-top: 10px;">
-                        {% endif %} -->
-                        <a href="{% url 'view_question' question.pk %}" class="btn btn-danger btn-sm">View Details</a>
+                        <a href="{% url 'quora:view_question' question.pk %}" class="btn btn-danger btn-sm">View Details</a>
                         <small class="text-light float-end">Posted by {{ question.user.username }}</small>
                     </div>
                 </div>
+                
             {% empty %}
                 <p class="text-light">No questions found.</p>
             {% endfor %}

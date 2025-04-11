@@ -14,9 +14,12 @@
             <h2>{{ question.title }}</h2>
             <p>{{ question.body }}</p>
             {% if user == question.user %}
-                <a href="{% url 'delete_question' question.pk %}" class="text-danger me-2" title="Delete Question">
+                <a href="{% url 'quora:delete_question' question.pk %}" class="text-danger me-2" title="Delete Question">
                     <i class="bi bi-trash-fill"></i>
                 </a>
+            {% else %}
+                <a href="{% url 'quora:pass_question' question.pk %}" class="btn btn-warning btn-sm">Pass</a>
+                <a href="{% url 'quora:report_question' question.pk %}" class="btn btn-danger btn-sm">Report</a>
             {% endif %}
         
             <hr class="border-light">
@@ -25,15 +28,14 @@
                 <div class="border p-3 mb-2">
                     <p>{{ answer.body }}</p>
                     <small>By {{ answer.user.username }}</small><br>
-                    <!-- <a href="{% url 'toggle_like_answer' answer.pk %}" class="btn btn-outline-light btn-sm mt-1">👍 Like ({{ answer.total_likes }})</a> -->
                     <div class="d-flex gap-2 mt-1">
-                        <a href="{% url 'toggle_like_answer' answer.pk %}" 
+                        <a href="{% url 'quora:like_unlike_answer' answer.pk %}" 
                            class="btn btn-sm {% if user in answer.likes.all %}disabled{% endif %}" 
                            style="box-shadow: none; outline: none;">
                             👍
                         </a>
                     
-                        <a href="{% url 'toggle_like_answer' answer.pk %}" 
+                        <a href="{% url 'quora:like_unlike_answer' answer.pk %}" 
                            class="btn btn-sm {% if user not in answer.likes.all %}disabled{% endif %}" 
                            style="box-shadow: none; outline: none;">
                             👎
@@ -43,7 +45,7 @@
                     </div>
                     
                     {% if user == answer.user %}
-                        <a href="{% url 'delete_answer' answer.pk %}" class="text-danger" title="Delete Answer">
+                        <a href="{% url 'quora:delete_answer' answer.pk %}" class="text-danger" title="Delete Answer">
                             <i class="bi bi-trash-fill"></i>
                         </a>
                     {% endif %}
@@ -52,7 +54,7 @@
             {% empty %}
                 <p>No answers yet.</p>
             {% endfor %}
-            <a href="{% url 'answer_question' question.pk %}" class="btn btn-danger mt-3">Answer This Question</a>
+            <a href="{% url 'quora:answer_question' question.pk %}" class="btn btn-danger mt-3">Answer This Question</a>
         </div>
         
     </div>
