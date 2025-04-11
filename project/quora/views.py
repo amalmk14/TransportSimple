@@ -27,15 +27,36 @@ def signup_view(request):
         form = SignupForm()
     return render(request, 'signup.html', {'form': form})
 
+# def login_view(request):
+#     if request.method == 'POST':
+#         username = request.POST['username']
+#         password = request.POST['password']
+#         user = authenticate(request, username=username, password=password)
+#         if user is not None:
+#             login(request, user)
+#             return redirect('quora:home')
+#     return render(request, 'login.html')
+
+
 def login_view(request):
     if request.method == 'POST':
-        username = request.POST['username']
+        identifier = request.POST['username']  
         password = request.POST['password']
+        try:
+            user_obj = User.objects.get(email__iexact=identifier)
+            username = user_obj.username
+        except User.DoesNotExist:
+            username = identifier 
+
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
             return redirect('quora:home')
+        else:
+            return render(request, 'login.html', {'error': 'Invalid credentials'})
+    
     return render(request, 'login.html')
+
 
 def logout_view(request):
     logout(request)
