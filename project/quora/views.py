@@ -27,16 +27,6 @@ def signup_view(request):
         form = SignupForm()
     return render(request, 'signup.html', {'form': form})
 
-# def login_view(request):
-#     if request.method == 'POST':
-#         username = request.POST['username']
-#         password = request.POST['password']
-#         user = authenticate(request, username=username, password=password)
-#         if user is not None:
-#             login(request, user)
-#             return redirect('quora:home')
-#     return render(request, 'login.html')
-
 
 def login_view(request):
     if request.method == 'POST':
@@ -72,7 +62,7 @@ def post_question(request):
             question = form.save(commit=False)
             question.user = request.user
             question.save()
-    return redirect(request.META.get('HTTP_REFERER', 'quora:home'))  # Redirect back
+    return redirect(request.META.get('HTTP_REFERER', 'quora:home'))
 
 
 from .models import Question, QuestionPass
